@@ -11,11 +11,11 @@ import {
     RefreshControl,
     View,
 } from 'react-native'
-import RepositoryCell from './RepositoryCell'
+import RepositoryCell from '../common/RepositoryCell'
 import RepositoryDetail from './RepositoryDetail'
-import FavoriteDao from './dao/FavoriteDao'
-import ProjectModel from './model/ProjectModel'
-import NavigationBar from './NavigationBar'
+import FavoriteDao from '../expand/dao/FavoriteDao'
+import ProjectModel from '../model/ProjectModel'
+import NavigationBar from '../common/NavigationBar'
 var favoriteDao = new FavoriteDao()
 export default class FavoritePage extends Component {
     constructor(propos) {
@@ -132,7 +132,7 @@ export default class FavoritePage extends Component {
             />;
         var navigationBar = Platform.OS === "android" ?
             <NavigationBar
-                leftButtonIcon={require('../res/images/ic_menu_white_24dp.png')}
+                leftButtonIcon={require('../../res/images/ic_menu_white_24dp.png')}
                 onLeftButtonClick={()=>this.props.drawer.openDrawer()}
                 title='Favorite'/> :
             <NavigationBar

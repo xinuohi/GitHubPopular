@@ -14,12 +14,12 @@ import {
     Text,
     View,
 } from 'react-native'
-import NavigationBar from './NavigationBar'
+import NavigationBar from '../common/NavigationBar'
 export default class AboutPage extends Component {
     render() {
         var navigationBar = Platform.OS === "android" ?
             <NavigationBar
-                leftButtonIcon={require('../res/images/ic_menu_white_24dp.png')}
+                leftButtonIcon={require('../../res/images/ic_menu_white_24dp.png')}
                 onLeftButtonClick={()=>this.props.drawer.openDrawer()}
                 title='About'/> :
             <NavigationBar

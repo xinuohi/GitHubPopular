@@ -10,11 +10,11 @@ import {
     RefreshControl,
     View,
 } from 'react-native'
-import RepositoryCell from './RepositoryCell'
+import RepositoryCell from '../common/RepositoryCell'
 import RepositoryDetail from './RepositoryDetail'
-import FavoriteDao from './dao/FavoriteDao'
-import RespositoryDao from './dao/RespositoryDao'
-import ProjectModel from './model/ProjectModel'
+import FavoriteDao from '../expand/dao/FavoriteDao'
+import RespositoryDao from '../expand/dao/RespositoryDao'
+import ProjectModel from '../model/ProjectModel'
 var API_URL = 'https://api.github.com/search/repositories?q='
 var QUERY_STR = '&sort=stars'
 // var API_URL ='https://api.github.com/search/repositories?q=ios&sort=stars';

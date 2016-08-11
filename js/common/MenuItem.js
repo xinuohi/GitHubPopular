@@ -13,7 +13,7 @@ import {
   View,
   Image
 } from 'react-native'
-import MPColors from '../common/MPColors'
+import MPColors from './MPColors'
 
 export default class MenuItem extends React.Component {
   static propTypes = {

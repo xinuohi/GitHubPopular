@@ -14,8 +14,8 @@ import {
     Text,
     View,
 } from 'react-native'
-import NavigationBar from './NavigationBar'
-import FavoriteDao from './dao/FavoriteDao'
+import NavigationBar from '../common/NavigationBar'
+import FavoriteDao from '../expand/dao/FavoriteDao'
 var favoriteDao = new FavoriteDao();
 var WEBVIEW_REF = 'webview';
 
@@ -24,7 +24,7 @@ export default class RepositoryDetail extends Component {
         super(propos);
         this.state = {
             isFavorite: this.props.projectModel.isFavorite,
-            favoriteIcon: this.props.projectModel.isFavorite ? require('../res/images/ic_star_border_white_24dp.png') : require('../res/images/ic_star_border_gray_white_24dp.png'),
+            favoriteIcon: this.props.projectModel.isFavorite ? require('../../res/images/ic_star_border_white_24dp.png') : require('../../res/images/ic_star_border_gray_white_24dp.png'),
             url: this.props.projectModel.item.html_url,
             canGoBack: false,
             title: this.props.projectModel.item.full_name
@@ -48,7 +48,7 @@ export default class RepositoryDetail extends Component {
     setFavoriteState(isFavorite) {
         this.setState({
             isFavorite: isFavorite,
-            favoriteIcon: isFavorite ? require('../res/images/ic_star_border_white_24dp.png') : require('../res/images/ic_star_border_gray_white_24dp.png')
+            favoriteIcon: isFavorite ? require('../../res/images/ic_star_border_white_24dp.png') : require('../../res/images/ic_star_border_gray_white_24dp.png')
         })
     }
 

@@ -21,7 +21,7 @@ export default class RespositoryCell extends Component {
         super(propos);
         this.state = {
             isFavorite: this.props.projectModel.isFavorite,
-            favoriteIcon: this.props.projectModel.isFavorite ? require('../res/images/ic_star_border_green_24dp.png') : require('../res/images/ic_star_border_gray_24dp.png'),
+            favoriteIcon: this.props.projectModel.isFavorite ? require('../../res/images/ic_star_border_green_24dp.png') : require('../../res/images/ic_star_border_gray_24dp.png'),
         };
     }
 
@@ -33,7 +33,7 @@ export default class RespositoryCell extends Component {
         this.props.projectModel.isFavorite = isFavorite;
         this.setState({
             isFavorite: isFavorite,
-            favoriteIcon: isFavorite ? require('../res/images/ic_star_border_green_24dp.png') : require('../res/images/ic_star_border_gray_24dp.png')
+            favoriteIcon: isFavorite ? require('../../res/images/ic_star_border_green_24dp.png') : require('../../res/images/ic_star_border_gray_24dp.png')
         })
     }
 
