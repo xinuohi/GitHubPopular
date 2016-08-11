@@ -12,22 +12,26 @@ import {
     Platform,
     TouchableOpacity,
     Text,
+    Image,
     TabBarIOS,
     View
 } from 'react-native'
 import ScrollableTabView, {ScrollableTabBar} from 'react-native-scrollable-tab-view'
+import TabNavigator from 'react-native-tab-navigator'
+
 import AboutPage from './js/page/AboutPage'
 import PopularPage from './js/page/PopularPage'
 import FavoritePage from './js/page/FavoritePage'
 import NavigationBar from './js/common/NavigationBar'
 var updateFavorite;
-class GitHubPopular extends Component {
+export default class GitHubPopular extends Component {
     constructor(props) {
         super(props);
         this.state = {
             selectedTab: 'popularTab',
         };
     }
+
     onSelected(object) {
         if (this.updateFavorite && 'popularTab' === object)this.updateFavorite(object);
         this.setState({
@@ -52,8 +56,6 @@ class GitHubPopular extends Component {
                     component: defaultComponent
                 }}
                 renderScene={this._renderScene}
-                //sceneStyle={{paddingTop: (Platform.OS === 'android' ? 66 : 64)}}
-                //navigationBar={this._renderNavBar(defaultName)}
             />
         )
     }
@@ -64,7 +66,6 @@ class GitHubPopular extends Component {
                 <NavigationBar
                     title='Popular'/>
                 <ScrollableTabView
-                    style={{paddingBottom: 50}}
                     tabBarUnderlineColor='#4caf50'
                     tabBarInactiveTextColor='gray'
                     tabBarActiveTextColor='#4caf50'
@@ -88,30 +89,38 @@ class GitHubPopular extends Component {
         return this._navigator(()=>component, 'Popular');
     }
 
-    _tbItem(title, icon, selectedTab, navigator) {
-        return (
-            <TabBarIOS.Item
-                title={title}
-                icon={icon}
-                selectedIcon={icon}
-                selected={this.state.selectedTab === selectedTab}
-                onPress={()=>this.onSelected(selectedTab)}
-            >
-                {navigator}
-            </TabBarIOS.Item>
-        )
-    }
-
     render() {
+        let tabBarHeight = 0;
         return (
-            <TabBarIOS
-                tintColor="#4caf50"
-                unselectedTintColor="lightslategray"
-                barTintColor="ghostwhite">
-                {this._tbItem('Popular', require('./res/images/ic_whatshot_black_36dp.png'), 'popularTab', this._popularNavigator())}
-                {this._tbItem('Favorite', require('./res/images/ic_favorite_black_36dp.png'), 'favoriteTab', this._navigator(FavoritePage, 'Favorite'))}
-                {this._tbItem('About', require('./res/images/ic_hdr_weak_black_36dp.png'), 'aboutTab', this._navigator(AboutPage, 'About'))}
-            </TabBarIOS>
+            <TabNavigator
+                //tabBarStyle={{ height: tabBarHeight,}}
+                //sceneStyle={{ paddingBottom: tabBarHeight }}
+            >
+                <TabNavigator.Item
+                    selected={this.state.selectedTab === 'popularTab'}
+                    title="Popular"
+                    renderIcon={() => <Image source={require('./res/images/ic_whatshot_black_36dp.png')}/>}
+                    //renderSelectedIcon={() => <Image source={require('./res/images/ic_whatshot_black_36dp.png')} />}
+                    onPress={() => this.onSelected('popularTab')}>
+                    {this._popularNavigator()}
+                </TabNavigator.Item>
+                <TabNavigator.Item
+                    selected={this.state.selectedTab === 'favoriteTab'}
+                    title="Favorite"
+                    renderIcon={() => <Image source={require('./res/images/ic_favorite_black_36dp.png')}/>}
+                    //renderSelectedIcon={() => <Image source={require('./res/images/ic_favorite_black_36dp.png')} />}
+                    onPress={() => this.onSelected('favoriteTab')}>
+                    {this._navigator(FavoritePage, 'Favorite')}
+                </TabNavigator.Item>
+                <TabNavigator.Item
+                    selected={this.state.selectedTab === 'aboutTab'}
+                    title="About"
+                    renderIcon={() => <Image source={require('./res/images/ic_hdr_weak_black_36dp.png')}/>}
+                    //renderSelectedIcon={() => <Image source={require('./res/images/ic_hdr_weak_black_36dp.png')} />}
+                    onPress={() => this.onSelected('aboutTab')}>
+                    {this._navigator(AboutPage, 'About')}
+                </TabNavigator.Item>
+            </TabNavigator>
         );
     }
 }

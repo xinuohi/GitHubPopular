@@ -120,7 +120,7 @@ export default class FavoritePage extends Component {
                 dataSource={this.state.dataSource}
                 refreshControl={
                     <RefreshControl
-                        //style={{paddingTop:64}}
+                        //style={{paddingTop:20}}
                         refreshing={this.state.isLoading}
                         onRefresh={()=>this.onRefresh()}
                         tintColor="#ff0000"
@@ -130,11 +130,7 @@ export default class FavoritePage extends Component {
                         progressBackgroundColor="#ffff00"
                     />}
             />;
-        var navigationBar = Platform.OS === "android" ?
-            <NavigationBar
-                leftButtonIcon={require('../../res/images/ic_menu_white_24dp.png')}
-                onLeftButtonClick={()=>this.props.drawer.openDrawer()}
-                title='Favorite'/> :
+        var navigationBar =
             <NavigationBar
                 title='Favorite'/>;
         return (
@@ -153,7 +149,7 @@ var styles = StyleSheet.create({
         // backgroundColor:'red'
     },
     listView: {
-        marginTop: Platform.OS === "ios" ? -20 : 0,
+        // marginTop: Platform.OS === "ios" ? 0 : 0,
     },
     separator: {
         height: 1,

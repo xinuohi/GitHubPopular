@@ -17,11 +17,7 @@ import {
 import NavigationBar from '../common/NavigationBar'
 export default class AboutPage extends Component {
     render() {
-        var navigationBar = Platform.OS === "android" ?
-            <NavigationBar
-                leftButtonIcon={require('../../res/images/ic_menu_white_24dp.png')}
-                onLeftButtonClick={()=>this.props.drawer.openDrawer()}
-                title='About'/> :
+        var navigationBar =
             <NavigationBar
                 title='About'/>;
         return (
