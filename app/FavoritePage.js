@@ -69,9 +69,9 @@ export default class FavoritePage extends Component {
     }
 
     onSelectRepository(projectModel) {
-        // var belongNavigator=this.props.homeComponent.refs.navFavorite;
+        var belongNavigator= this.props.navigator? this.props.navigator:this.props.homeComponent.refs.navFavorite;
         var item = projectModel.item;
-        this.props.navigator.push({
+        belongNavigator.push({
             title: item.full_name,
             component: RepositoryDetail,
             params: {
