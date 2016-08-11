@@ -144,7 +144,8 @@ export default class FavoritePage extends Component {
             </View>
         );
     }
-};
+}
+
 var styles = StyleSheet.create({
     container: {
         flex: 1,

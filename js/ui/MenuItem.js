@@ -13,16 +13,16 @@ import {
   View,
   Image
 } from 'react-native'
-var MPColors=require('../common/MPColors');
+import MPColors from '../common/MPColors'
 
-class MenuItem extends React.Component {
-  props: {
-    icon: number;
-    selectedIcon: number;
-    selected: boolean;
-    title: string;
-    badge: ?string;
-    onPress: () => void;
+export default class MenuItem extends React.Component {
+  static propTypes = {
+    icon: Image.propTypes.source,
+    selectedIcon: Image.propTypes.source,
+    selected:React.PropTypes.bool,
+    title: React.PropTypes.string,
+    badge: React.PropTypes.string,
+    onPress: React.PropTypes.func
   };
 
   render() {
@@ -80,6 +80,4 @@ var styles = StyleSheet.create({
     fontSize: 12,
     color: 'white',
   },
-});
-
-module.exports = MenuItem;
+})

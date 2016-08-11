@@ -16,7 +16,7 @@ const LOCATION_COLORS = {
   'FOOD TENT': '#FFCD3B',
 };
 
-function colorForLocation(location: ?string): string {
+function colorForLocation(location) {
   if (!location) {
     return 'black';
   }
@@ -29,7 +29,7 @@ function colorForLocation(location: ?string): string {
   return color;
 }
 
-function colorForTopic(count: number, index: number): string {
+function colorForTopic(count, index) {
   const hue = Math.round(360 * index / (count + 1));
   return `hsl(${hue}, 74%, 65%)`;
 }

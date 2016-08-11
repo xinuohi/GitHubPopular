@@ -16,10 +16,10 @@ import {
     View
 } from 'react-native'
 import ScrollableTabView, {ScrollableTabBar} from 'react-native-scrollable-tab-view'
-import AboutPage from './app/AboutPage'
-import PopularPage from './app/PopularPage'
-import FavoritePage from './app/FavoritePage'
-import NavigationBar from './app/NavigationBar'
+import AboutPage from './js/AboutPage'
+import PopularPage from './js/PopularPage'
+import FavoritePage from './js/FavoritePage'
+import NavigationBar from './js/NavigationBar'
 var updateFavorite;
 class GitHubPopular extends Component {
     constructor(props) {

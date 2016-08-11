@@ -203,7 +203,7 @@ export default class PopularPage extends Component {
         );
     }
 }
-;
+
 var styles = StyleSheet.create({
     container: {
         flex: 1,

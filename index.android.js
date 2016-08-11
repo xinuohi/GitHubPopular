@@ -18,11 +18,11 @@ import {
     View
 } from 'react-native'
 import ScrollableTabView, {ScrollableTabBar,} from 'react-native-scrollable-tab-view'
-import AboutPage from './app/AboutPage'
-import PopularPage from './app/PopularPage'
-import FavoritePage from './app/FavoritePage'
-import NavigationBar from './app/NavigationBar'
-import MenuItem from './app/ui/MenuItem'
+import AboutPage from './js/AboutPage'
+import PopularPage from './js/PopularPage'
+import FavoritePage from './js/FavoritePage'
+import NavigationBar from './js/NavigationBar'
+import MenuItem from './js/ui/MenuItem'
 var updateFavorite;
 class GitHubPopular extends Component {
     constructor(props) {
@@ -109,21 +109,21 @@ class GitHubPopular extends Component {
             <View style={styles.drawer}>
                 <MenuItem
                     title="Popular"
-                    selected={()=>this.props.tab === 'popularTab'}
+                    selected={this.props.tab === 'popularTab'}
                     onPress={()=>this.onTabSelect('popularTab')}
                     icon={require('./res/images/ic_whatshot_black_36dp.png')}
                     //selectedIcon={}
                 />
                 <MenuItem
                     title="Favorite"
-                    selected={()=>this.props.tab === 'favoriteTab'}
+                    selected={this.props.tab === 'favoriteTab'}
                     onPress={()=>this.onTabSelect('favoriteTab')}
                     icon={require('./res/images/ic_favorite_black_36dp.png')}
                     //selectedIcon={}
                 />
                 <MenuItem
                     title="About"
-                    selected={()=>this.props.tab === 'aboutTab'}
+                    selected={this.props.tab === 'aboutTab'}
                     onPress={()=>this.onTabSelect('aboutTab')}
                     icon={require('./res/images/ic_hdr_weak_black_36dp.png')}
                     //selectedIcon={}

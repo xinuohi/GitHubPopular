@@ -87,7 +87,7 @@ export default class RespositoryCell extends Component {
         );
     }
 }
-;
+
 
 var styles = StyleSheet.create({
     title: {

@@ -99,7 +99,7 @@ export default class RepositoryDetail extends Component {
         );
     }
 }
-;
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
