@@ -1,28 +1,24 @@
 /**
- * PopularPage
+ * TrendingPage
  * @flow
  */
 'use strict';
-import React, {Component} from 'react'
-import {
-    ListView,
-    StyleSheet,
-    RefreshControl,
-    View,
-} from 'react-native'
-import RepositoryCell from '../common/RepositoryCell'
-import RepositoryDetail from './RepositoryDetail'
-import FavoriteDao from '../expand/dao/FavoriteDao'
-import RespositoryDao,{FLAG_STORAGE} from '../expand/dao/RespositoryDao'
-import ProjectModel from '../model/ProjectModel'
-var API_URL = 'https://api.github.com/search/repositories?q='
-var QUERY_STR = '&sort=stars'
-// var API_URL ='https://api.github.com/search/repositories?q=ios&sort=stars';
-// var API_URL ='https://api.github.com/search/repositories?q=stars:>1&sort=stars';
+import React, {Component} from "react";
+import {ListView, StyleSheet, RefreshControl, View} from "react-native";
+import TrendingRepoCell from "../common/TrendingRepoCell";
+import RepositoryDetail from "./RepositoryDetail";
+import FavoriteDao from "../expand/dao/FavoriteDao";
+import RespositoryDao, {FLAG_STORAGE} from "../expand/dao/RespositoryDao";
+import ProjectModel from "../model/ProjectModel";
+import Trending from "../expand/trending/GitHubTrending";
+
+const API_URL = 'https://github.com/trending/'
 var projectModels = [];
-var favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular)
-var respositoryDao = new RespositoryDao()
-export default class PopularPage extends Component {
+var favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_trending)
+var respositoryDao = new RespositoryDao(FLAG_STORAGE.flag_trending)
+var trending = new Trending()
+
+export default class TrendingPage extends Component {
     constructor(propos) {
         super(propos);
         this.state = {
@@ -82,7 +78,7 @@ export default class PopularPage extends Component {
     }
 
     genFetchUrl(category) {
-        return API_URL + (category === 'ALL' ? 'stars:>1' : category) + QUERY_STR;
+        return API_URL + category;
     }
 
     fetchCache() {
@@ -91,7 +87,7 @@ export default class PopularPage extends Component {
             isLoading: true,
             isLodingFail: false,
         });
-        respositoryDao.getRespository(FLAG_STORAGE.flag_popular,this.props.tabLabel).then((items)=> {
+        respositoryDao.getRespository(FLAG_STORAGE.flag_trending, this.props.tabLabel).then((items)=> {
             if (items) {
                 if (!this)return;
                 this.setState({
@@ -110,25 +106,25 @@ export default class PopularPage extends Component {
             isLoading: true,
             isLodingFail: false,
         });
-        fetch(this.genFetchUrl(this.props.tabLabel))
-            .then((response)=>response.json())
-            .catch((error)=> {
+        trending.fetchTrending(this.genFetchUrl(this.props.tabLabel))
+            .then((items)=> {
                 if (!this)return;
                 this.setState({
-                    isLoading: false,
-                    isLodingFail: true,
-                });
-            }).then((responseData)=> {
+                    items: items ? items : []
+                })
+                this.getFavoriteKeys(true);
+                if (items)respositoryDao.saveRespository(FLAG_STORAGE.flag_trending, this.props.tabLabel, items);
+
+            }).catch((error)=> {
+            console.log(error);
             if (!this)return;
             this.setState({
-                items: responseData.items ? responseData.items : []
+                isLoading: false,
+                isLodingFail: true,
             })
-            this.getFavoriteKeys(true);
-            if (responseData)respositoryDao.saveRespository(FLAG_STORAGE.flag_popular,this.props.tabLabel, responseData.items);
         })
-            .done();
-    }
 
+    }
     onRefresh() {
         this.loadData();
     }
@@ -169,8 +165,8 @@ export default class PopularPage extends Component {
 
     renderRow(projectModel, sectionID, rowID) {
         return (
-            <RepositoryCell
-                key={projectModel.item.id}
+            <TrendingRepoCell
+                key={projectModel.item.fullName}
                 onSelect={()=>this.onSelectRepository(projectModel)}
                 projectModel={projectModel}
                 onFavorite={(item, isFavorite)=>this.onFavorite(item, isFavorite)}/>

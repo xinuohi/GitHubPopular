@@ -11,13 +11,47 @@ import {
     RefreshControl,
     View,
 } from 'react-native'
+
+import ScrollableTabView, {DefaultTabBar} from 'react-native-scrollable-tab-view'
+
 import RepositoryCell from '../common/RepositoryCell'
 import RepositoryDetail from './RepositoryDetail'
 import FavoriteDao from '../expand/dao/FavoriteDao'
 import ProjectModel from '../model/ProjectModel'
 import NavigationBar from '../common/NavigationBar'
-var favoriteDao = new FavoriteDao()
+import {FLAG_STORAGE} from '../expand/dao/RespositoryDao'
+
 export default class FavoritePage extends Component {
+    render() {
+        var content =
+            <ScrollableTabView
+                tabBarUnderlineColor='#4caf50'
+                tabBarInactiveTextColor='gray'
+                tabBarActiveTextColor='#4caf50'
+                ref="scrollableTabView"
+                initialPage={0}
+                renderTabBar={() => <DefaultTabBar
+                    style={{height: 42}}
+                    textStyle={{textAlign:'center',lineHeight:25}}
+                    underlineHeight={2}/>}
+            >
+                <FavoriteTab tabLabel='Popular' flag={FLAG_STORAGE.flag_popular}/>
+                <FavoriteTab tabLabel='Trending' flag={FLAG_STORAGE.flag_trending}/>
+            </ScrollableTabView>
+        var navigationBar =
+            <NavigationBar
+                title='Favorite'/>;
+        return (
+            <View style={styles.container}>
+                {navigationBar}
+                {content}
+            </View>
+        );
+    }
+
+}
+
+class FavoriteTab extends Component {
     constructor(propos) {
         super(propos);
         this.state = {
@@ -29,6 +63,7 @@ export default class FavoritePage extends Component {
     }
 
     componentDidMount() {
+        this.favoriteDao = new FavoriteDao(this.props.flag);
         this.loadData(true);
     }
 
@@ -42,7 +77,7 @@ export default class FavoritePage extends Component {
                 isLoading: true,
                 isLodingFail: false,
             });
-        favoriteDao.getAllItems().then((items)=> {
+        this.favoriteDao.getAllItems().then((items)=> {
             var resultData = [];
             for (var i = 0, len = items.length; i < len; i++) {
                 resultData.push(new ProjectModel(items[i], true));
@@ -69,7 +104,7 @@ export default class FavoritePage extends Component {
     }
 
     onSelectRepository(projectModel) {
-        var belongNavigator= this.props.navigator? this.props.navigator:this.props.homeComponent.refs.navFavorite;
+        var belongNavigator = this.props.navigator ? this.props.navigator : this.props.homeComponent.refs.navFavorite;
         var item = projectModel.item;
         belongNavigator.push({
             title: item.full_name,
@@ -82,9 +117,9 @@ export default class FavoritePage extends Component {
 
     onFavorite(item, isFavorite) {
         if (isFavorite) {
-            favoriteDao.saveFavoriteItem(item.id.toString(), JSON.stringify(item));
+            this.favoriteDao.saveFavoriteItem(item.id.toString(), JSON.stringify(item));
         } else {
-            favoriteDao.removeFavoriteItem(item.id.toString());
+            this.favoriteDao.removeFavoriteItem(item.id.toString());
         }
     }
 
@@ -130,12 +165,8 @@ export default class FavoritePage extends Component {
                         progressBackgroundColor="#ffff00"
                     />}
             />;
-        var navigationBar =
-            <NavigationBar
-                title='Favorite'/>;
         return (
             <View style={styles.container}>
-                {navigationBar}
                 {content}
             </View>
         );

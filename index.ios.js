@@ -21,6 +21,7 @@ import TabNavigator from 'react-native-tab-navigator'
 
 import AboutPage from './js/page/AboutPage'
 import PopularPage from './js/page/PopularPage'
+import TrendingPage from './js/page/TrendingPage'
 import FavoritePage from './js/page/FavoritePage'
 import NavigationBar from './js/common/NavigationBar'
 var updateFavorite;
@@ -60,54 +61,63 @@ export default class GitHubPopular extends Component {
         )
     }
 
-    _popularNavigator() {
+    _popularNavigator(title) {
+        var TargetPage=title==='Popular'? PopularPage:TrendingPage;
         var component =
             <View style={{flex: 1}}>
                 <NavigationBar
-                    title='Popular'/>
+                    title={title}/>
                 <ScrollableTabView
                     tabBarUnderlineColor='#4caf50'
                     tabBarInactiveTextColor='gray'
                     tabBarActiveTextColor='#4caf50'
                     ref="scrollableTabView"
                     initialPage={0}
-                    renderTabBar={() => <ScrollableTabBar underlineHeight={2}/>}
+                    renderTabBar={() => <ScrollableTabBar style={{height:42}} tabStyle={{height:41}} underlineHeight={2}/>}
                 >
-                    <PopularPage tabLabel='ALL' homeComponent={this}/>
-                    <PopularPage tabLabel='iOS' homeComponent={this}/>
-                    <PopularPage tabLabel='Android' homeComponent={this}/>
-                    <PopularPage tabLabel='JavaScript' homeComponent={this}/>
-                    <PopularPage tabLabel='Java' homeComponent={this}/>
-                    <PopularPage tabLabel='Go' homeComponent={this}/>
-                    <PopularPage tabLabel='CSS' homeComponent={this}/>
-                    <PopularPage tabLabel='Object-c' homeComponent={this}/>
-                    <PopularPage tabLabel='Python' homeComponent={this}/>
-                    <PopularPage tabLabel='Swift' homeComponent={this}/>
-                    <PopularPage tabLabel='HTML' homeComponent={this}/>
+                    <TargetPage tabLabel='ALL' homeComponent={this}/>
+                    <TargetPage tabLabel='iOS' homeComponent={this}/>
+                    <TargetPage tabLabel='Android' homeComponent={this}/>
+                    <TargetPage tabLabel='JavaScript' homeComponent={this}/>
+                    <TargetPage tabLabel='Java' homeComponent={this}/>
+                    <TargetPage tabLabel='Go' homeComponent={this}/>
+                    <TargetPage tabLabel='CSS' homeComponent={this}/>
+                    <TargetPage tabLabel='Object-c' homeComponent={this}/>
+                    <TargetPage tabLabel='Python' homeComponent={this}/>
+                    <TargetPage tabLabel='Swift' homeComponent={this}/>
+                    <TargetPage tabLabel='HTML' homeComponent={this}/>
                 </ScrollableTabView>
             </View>
-        return this._navigator(()=>component, 'Popular');
+        return this._navigator(()=>component, title);
     }
 
     render() {
         let tabBarHeight = 0;
         return (
             <TabNavigator
-                //tabBarStyle={{ height: tabBarHeight,}}
-                //sceneStyle={{ paddingBottom: tabBarHeight }}
+                tabBarStyle={{}}
+                sceneStyle={{}}
             >
                 <TabNavigator.Item
                     selected={this.state.selectedTab === 'popularTab'}
                     title="Popular"
-                    renderIcon={() => <Image source={require('./res/images/ic_whatshot_black_36dp.png')}/>}
+                    renderIcon={() => <Image style={styles.tabBarIcon} source={require('./res/images/ic_whatshot_black_36dp.png')}/>}
                     //renderSelectedIcon={() => <Image source={require('./res/images/ic_whatshot_black_36dp.png')} />}
                     onPress={() => this.onSelected('popularTab')}>
-                    {this._popularNavigator()}
+                    {this._popularNavigator('Popular')}
+                </TabNavigator.Item>
+                <TabNavigator.Item
+                    selected={this.state.selectedTab === 'trendingTab'}
+                    title="Trending"
+                    renderIcon={() => <Image style={styles.tabBarIcon} source={require('./res/images/ic_whatshot_black_36dp.png')}/>}
+                    //renderSelectedIcon={() => <Image source={require('./res/images/ic_whatshot_black_36dp.png')} />}
+                    onPress={() => this.onSelected('trendingTab')}>
+                    {this._popularNavigator('Trending')}
                 </TabNavigator.Item>
                 <TabNavigator.Item
                     selected={this.state.selectedTab === 'favoriteTab'}
                     title="Favorite"
-                    renderIcon={() => <Image source={require('./res/images/ic_favorite_black_36dp.png')}/>}
+                    renderIcon={() => <Image style={styles.tabBarIcon} source={require('./res/images/ic_favorite_black_36dp.png')}/>}
                     //renderSelectedIcon={() => <Image source={require('./res/images/ic_favorite_black_36dp.png')} />}
                     onPress={() => this.onSelected('favoriteTab')}>
                     {this._navigator(FavoritePage, 'Favorite')}
@@ -115,7 +125,7 @@ export default class GitHubPopular extends Component {
                 <TabNavigator.Item
                     selected={this.state.selectedTab === 'aboutTab'}
                     title="About"
-                    renderIcon={() => <Image source={require('./res/images/ic_hdr_weak_black_36dp.png')}/>}
+                    renderIcon={() => <Image style={styles.tabBarIcon} source={require('./res/images/ic_hdr_weak_black_36dp.png')}/>}
                     //renderSelectedIcon={() => <Image source={require('./res/images/ic_hdr_weak_black_36dp.png')} />}
                     onPress={() => this.onSelected('aboutTab')}>
                     {this._navigator(AboutPage, 'About')}
@@ -129,24 +139,9 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#F5FCFF',
     },
-    navBar: {
-        alignItems: 'center',
-        backgroundColor: '#4caf50',
-        shadowOffset: {
-            width: 1,
-            height: 0.5,
-        },
-        shadowColor: '#55ACEE',
-        shadowOpacity: 0.8,
-    },
-    title: {
-        flex: 1, alignItems: 'center', justifyContent: 'center'
-    },
-    button: {
-        flex: 1, width: 50, alignItems: 'center', justifyContent: 'center'
-    },
-    buttonText: {
-        fontSize: 18, color: '#FFFFFF', fontWeight: '400'
+    tabBarIcon:{
+        width:26,height:26,
+        resizeMode:'contain'
     }
 })
 
