@@ -15,6 +15,7 @@ import {
 import ScrollableTabView, {DefaultTabBar} from 'react-native-scrollable-tab-view'
 
 import RepositoryCell from '../common/RepositoryCell'
+import TrendingRepoCell from '../common/TrendingRepoCell'
 import RepositoryDetail from './RepositoryDetail'
 import FavoriteDao from '../expand/dao/FavoriteDao'
 import ProjectModel from '../model/ProjectModel'
@@ -35,8 +36,8 @@ export default class FavoritePage extends Component {
                     textStyle={{textAlign:'center',lineHeight:25}}
                     underlineHeight={2}/>}
             >
-                <FavoriteTab tabLabel='Popular' flag={FLAG_STORAGE.flag_popular}/>
-                <FavoriteTab tabLabel='Trending' flag={FLAG_STORAGE.flag_trending}/>
+                <FavoriteTab {...this.props} tabLabel='Popular' flag={FLAG_STORAGE.flag_popular}/>
+                <FavoriteTab {...this.props} tabLabel='Trending' flag={FLAG_STORAGE.flag_trending}/>
             </ScrollableTabView>
         var navigationBar =
             <NavigationBar
@@ -111,39 +112,32 @@ class FavoriteTab extends Component {
             component: RepositoryDetail,
             params: {
                 projectModel: projectModel,
+                flag:this.props.flag
             },
         });
     }
 
     onFavorite(item, isFavorite) {
+        var key=this.props.flag===FLAG_STORAGE.flag_popular? item.id.toString():item.fullName;
         if (isFavorite) {
-            this.favoriteDao.saveFavoriteItem(item.id.toString(), JSON.stringify(item));
+            this.favoriteDao.saveFavoriteItem(key, JSON.stringify(item));
         } else {
-            this.favoriteDao.removeFavoriteItem(item.id.toString());
+            this.favoriteDao.removeFavoriteItem(key);
         }
     }
 
     renderRow(projectModel, sectionID, rowID) {
+        var CellComponent=this.props.flag===FLAG_STORAGE.flag_popular? RepositoryCell:TrendingRepoCell;
+
         return (
-            <RepositoryCell
-                key={projectModel.item.id}
+            <CellComponent
+                key={this.props.flag===FLAG_STORAGE.flag_popular? projectModel.item.id:projectModel.item.fullName}
                 onFavorite={(e)=>this.onFavorite(e)}
                 isFavorite={true}
                 onSelect={()=>this.onSelectRepository(projectModel)}
                 projectModel={projectModel}/>
         );
     }
-
-    renderSeparator(sectionID, rowID, adjacentRowHighlighted) {
-        var style = styles.rowSeparator;
-        if (adjacentRowHighlighted) {
-            style = [style, styles.rowSeparatorHide];
-        }
-        return (
-            <View key={'SEP_' + sectionID + '_' + rowID} style={style}/>
-        );
-    }
-
     render() {
         var content =
             <ListView
@@ -185,10 +179,5 @@ var styles = StyleSheet.create({
     separator: {
         height: 1,
         backgroundColor: '#eeeeee',
-    },
-    rowSeparator: {
-        backgroundColor: 'rgba(0, 0, 0, 0.1)',
-        height: 1,
-        marginLeft: 4,
     },
 });

@@ -10,6 +10,8 @@ import {
     RefreshControl,
     View,
 } from 'react-native'
+import ScrollableTabView, {ScrollableTabBar} from 'react-native-scrollable-tab-view'
+import NavigationBar from '../common/NavigationBar'
 import RepositoryCell from '../common/RepositoryCell'
 import RepositoryDetail from './RepositoryDetail'
 import FavoriteDao from '../expand/dao/FavoriteDao'
@@ -17,12 +19,46 @@ import RespositoryDao,{FLAG_STORAGE} from '../expand/dao/RespositoryDao'
 import ProjectModel from '../model/ProjectModel'
 var API_URL = 'https://api.github.com/search/repositories?q='
 var QUERY_STR = '&sort=stars'
-// var API_URL ='https://api.github.com/search/repositories?q=ios&sort=stars';
-// var API_URL ='https://api.github.com/search/repositories?q=stars:>1&sort=stars';
 var projectModels = [];
 var favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular)
-var respositoryDao = new RespositoryDao()
+var respositoryDao = new RespositoryDao(FLAG_STORAGE.flag_popular)
+
 export default class PopularPage extends Component {
+    render() {
+        var content =
+            <ScrollableTabView
+                tabBarUnderlineColor='#4caf50'
+                tabBarInactiveTextColor='gray'
+                tabBarActiveTextColor='#4caf50'
+                ref="scrollableTabView"
+                initialPage={0}
+                renderTabBar={() => <ScrollableTabBar style={{height:42}} tabStyle={{height:41}} underlineHeight={2}/>}
+            >
+                <PopularTab {...this.props}  tabLabel='ALL' />
+                <PopularTab {...this.props}  tabLabel='iOS' />
+                <PopularTab {...this.props}  tabLabel='Android' />
+                <PopularTab {...this.props}  tabLabel='JavaScript' />
+                <PopularTab {...this.props}  tabLabel='Java' />
+                <PopularTab {...this.props}  tabLabel='Go' />
+                <PopularTab {...this.props}  tabLabel='CSS' />
+                <PopularTab {...this.props}  tabLabel='Object-c' />
+                <PopularTab {...this.props}  tabLabel='Python' />
+                <PopularTab {...this.props}  tabLabel='Swift' />
+                <PopularTab {...this.props}  tabLabel='HTML' />
+            </ScrollableTabView>
+        var navigationBar =
+            <NavigationBar
+                title='Popular'/>;
+        return (
+            <View style={styles.container}>
+                {navigationBar}
+                {content}
+            </View>
+        );
+    }
+
+}
+class PopularTab extends Component {
     constructor(propos) {
         super(propos);
         this.state = {
@@ -91,7 +127,7 @@ export default class PopularPage extends Component {
             isLoading: true,
             isLodingFail: false,
         });
-        respositoryDao.getRespository(FLAG_STORAGE.flag_popular,this.props.tabLabel).then((items)=> {
+        respositoryDao.getRespository(this.props.tabLabel).then((items)=> {
             if (items) {
                 if (!this)return;
                 this.setState({
@@ -124,7 +160,7 @@ export default class PopularPage extends Component {
                 items: responseData.items ? responseData.items : []
             })
             this.getFavoriteKeys(true);
-            if (responseData)respositoryDao.saveRespository(FLAG_STORAGE.flag_popular,this.props.tabLabel, responseData.items);
+            if (responseData)respositoryDao.saveRespository(this.props.tabLabel, responseData.items);
         })
             .done();
     }
@@ -138,14 +174,14 @@ export default class PopularPage extends Component {
     }
 
     onSelectRepository(projectModel) {
-        var belongNavigator = this.props.homeComponent.refs.navPopular;
         var item = projectModel.item;
-        belongNavigator.push({
+        this.props.navigator.push({
             title: item.full_name,
             component: RepositoryDetail,
             params: {
                 projectModel: projectModel,
-                parentComponent: this
+                parentComponent: this,
+                flag:FLAG_STORAGE.flag_popular
             },
         });
     }
@@ -213,14 +249,5 @@ var styles = StyleSheet.create({
     },
     listView: {
         // marginTop:-20,
-    },
-    separator: {
-        height: 1,
-        backgroundColor: '#eeeeee',
-    },
-    rowSeparator: {
-        // backgroundColor:'red',
-        // height: 5,
-        // marginLeft: 4,
     },
 });

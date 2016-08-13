@@ -16,22 +16,27 @@ import {
 } from 'react-native'
 import NavigationBar from '../common/NavigationBar'
 import FavoriteDao from '../expand/dao/FavoriteDao'
-var favoriteDao = new FavoriteDao();
+const TRENDING_URL='https://github.com/'
 var WEBVIEW_REF = 'webview';
 
 export default class RepositoryDetail extends Component {
     constructor(propos) {
         super(propos);
+        var url=this.props.projectModel.item.html_url?this.props.projectModel.item.html_url
+            :TRENDING_URL+this.props.projectModel.item.fullName;
+        var title=this.props.projectModel.item.full_name?this.props.projectModel.item.full_name
+            :this.props.projectModel.item.fullName;
         this.state = {
             isFavorite: this.props.projectModel.isFavorite,
             favoriteIcon: this.props.projectModel.isFavorite ? require('../../res/images/ic_star_border_white_24dp.png') : require('../../res/images/ic_star_border_gray_white_24dp.png'),
-            url: this.props.projectModel.item.html_url,
+            url: url,
             canGoBack: false,
-            title: this.props.projectModel.item.full_name
+            title: title
         }
     }
 
     componentDidMount() {
+        this.favoriteDao=new FavoriteDao(this.props.flag);
         BackAndroid.addEventListener('hardwareBackPress', this.onHardwareBackPress);
     }
 
@@ -55,10 +60,11 @@ export default class RepositoryDetail extends Component {
     onRightButtonClick() {//favoriteIcon单击回调函数
         var projectModel = this.props.projectModel;
         this.setFavoriteState(projectModel.isFavorite = !projectModel.isFavorite);
+        var key=projectModel.item.fullName? projectModel.item.fullName:projectModel.item.id.toString();
         if (projectModel.isFavorite) {
-            favoriteDao.saveFavoriteItem(projectModel.item.id.toString(), JSON.stringify(projectModel.item));
+            this.favoriteDao.saveFavoriteItem(key, JSON.stringify(projectModel.item));
         } else {
-            favoriteDao.removeFavoriteItem(projectModel.item.id.toString());
+            this.favoriteDao.removeFavoriteItem(key);
         }
     }
 
@@ -104,6 +110,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#ffffff',
-        marginBottom: Platform.OS === "ios" ? 50 : 0,
+        // marginBottom: Platform.OS === "ios" ? 50 : 0,
     },
 })

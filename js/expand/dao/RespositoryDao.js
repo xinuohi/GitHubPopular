@@ -4,47 +4,42 @@
  */
 'use strict';
 
-var React = require('react-native');
-
-var {
+import {
     AsyncStorage,
-} = React;
+} from 'react-native';
 
-export var FLAG_STORAGE={flag_popular:'popular',flag_trending:'trending'}
+export var FLAG_STORAGE = {flag_popular: 'popular', flag_trending: 'trending'}
 
-export default function RespositoryDao() {//Singleton pattern
-    if (typeof RespositoryDao.instance === 'object') {
-        return RespositoryDao.instance;
+export default class RespositoryDao {
+    constructor(flag) {
+        this.flag = flag;
     }
-    RespositoryDao.instance = this;
-}
-RespositoryDao.prototype.saveRespository = function (flag,key,items, callback) {
-    var key=flag+'_'+key;
-
-    AsyncStorage.setItem(key, JSON.stringify(items), callback);
-}
-RespositoryDao.prototype.removeRespository = function (flag,key) {
-    var key=flag+'_'+key;
-    AsyncStorage.removeItem(key, (error, result)=> {
-        console.log(error);
-    });
-}
-RespositoryDao.prototype.getRespository = function (flag,key) {
-    var key=flag+'_'+key;
-    return new Promise((resolve, reject)=> {
-        AsyncStorage.getItem(key, (error, result)=> {
-            if (!error) {
-                try {
-                    resolve(JSON.parse(result));
-                } catch (e) {
-                    reject(e);
-                    console.error(e);
+    saveRespository = function (key, items, callback) {
+        AsyncStorage.setItem(this.getKeyWithFlag(key), JSON.stringify(items), callback);
+    }
+    getRespository = function (key) {
+        return new Promise((resolve, reject)=> {
+            AsyncStorage.getItem(this.getKeyWithFlag(key), (error, result)=> {
+                if (!error) {
+                    try {
+                        resolve(JSON.parse(result));
+                    } catch (e) {
+                        reject(e);
+                        console.error(e);
+                    }
+                } else {
+                    reject(error);
+                    console.error(error);
                 }
-            } else {
-                reject(error);
-                console.error(error);
-            }
+            });
         });
-    });
+    }
+    removeRespository = function (key) {
+        AsyncStorage.removeItem(this.getKeyWithFlag(key), (error, result)=> {
+            console.log(error);
+        });
+    }
+    getKeyWithFlag(key){
+        return this.flag + '_' + key;
+    }
 }
-// module.exports = RespositoryDao;

@@ -5,6 +5,8 @@
 'use strict';
 import React, {Component} from "react";
 import {ListView, StyleSheet, RefreshControl, View} from "react-native";
+import ScrollableTabView, {ScrollableTabBar} from 'react-native-scrollable-tab-view'
+import NavigationBar from '../common/NavigationBar'
 import TrendingRepoCell from "../common/TrendingRepoCell";
 import RepositoryDetail from "./RepositoryDetail";
 import FavoriteDao from "../expand/dao/FavoriteDao";
@@ -19,6 +21,43 @@ var respositoryDao = new RespositoryDao(FLAG_STORAGE.flag_trending)
 var trending = new Trending()
 
 export default class TrendingPage extends Component {
+    render() {
+        var content =
+            <ScrollableTabView
+                tabBarUnderlineColor='#4caf50'
+                tabBarInactiveTextColor='gray'
+                tabBarActiveTextColor='#4caf50'
+                ref="scrollableTabView"
+                initialPage={0}
+                renderTabBar={() => <ScrollableTabBar style={{height:42}} tabStyle={{height:41}} underlineHeight={2}/>}
+            >
+                <TrendingTab {...this.props}  tabLabel='ALL' />
+                <TrendingTab {...this.props}  tabLabel='iOS' />
+                <TrendingTab {...this.props}  tabLabel='Android' />
+                <TrendingTab {...this.props}  tabLabel='JavaScript' />
+                <TrendingTab {...this.props}  tabLabel='Java' />
+                <TrendingTab {...this.props}  tabLabel='Go' />
+                <TrendingTab {...this.props}  tabLabel='CSS' />
+                <TrendingTab {...this.props}  tabLabel='Object-c' />
+                <TrendingTab {...this.props}  tabLabel='Python' />
+                <TrendingTab {...this.props}  tabLabel='Swift' />
+                <TrendingTab {...this.props}  tabLabel='HTML' />
+            </ScrollableTabView>
+        var navigationBar =
+            <NavigationBar
+                title='Trending'/>;
+        return (
+            <View style={styles.container}>
+                {navigationBar}
+                {content}
+            </View>
+        );
+    }
+
+}
+
+
+class TrendingTab extends Component {
     constructor(propos) {
         super(propos);
         this.state = {
@@ -87,7 +126,7 @@ export default class TrendingPage extends Component {
             isLoading: true,
             isLodingFail: false,
         });
-        respositoryDao.getRespository(FLAG_STORAGE.flag_trending, this.props.tabLabel).then((items)=> {
+        respositoryDao.getRespository(this.props.tabLabel).then((items)=> {
             if (items) {
                 if (!this)return;
                 this.setState({
@@ -113,7 +152,7 @@ export default class TrendingPage extends Component {
                     items: items ? items : []
                 })
                 this.getFavoriteKeys(true);
-                if (items)respositoryDao.saveRespository(FLAG_STORAGE.flag_trending, this.props.tabLabel, items);
+                if (items)respositoryDao.saveRespository(this.props.tabLabel, items);
 
             }).catch((error)=> {
             console.log(error);
@@ -134,29 +173,29 @@ export default class TrendingPage extends Component {
     }
 
     onSelectRepository(projectModel) {
-        var belongNavigator = this.props.homeComponent.refs.navPopular;
         var item = projectModel.item;
-        belongNavigator.push({
-            title: item.full_name,
+        this.props.navigator.push({
+            title: item.fullName,
             component: RepositoryDetail,
             params: {
                 projectModel: projectModel,
-                parentComponent: this
+                parentComponent: this,
+                flag:FLAG_STORAGE.flag_trending
             },
         });
     }
 
     onFavorite(item, isFavorite) {//favoriteIcon单击回调函数
         if (isFavorite) {
-            favoriteDao.saveFavoriteItem(item.id.toString(), JSON.stringify(item));
+            favoriteDao.saveFavoriteItem(item.fullName, JSON.stringify(item));
         } else {
-            favoriteDao.removeFavoriteItem(item.id.toString());
+            favoriteDao.removeFavoriteItem(item.fullName);
         }
     }
 
     checkFavorite(item) {//检查该Item是否被收藏
         for (var i = 0, len = this.state.favoritKeys.length; i < len; i++) {
-            if (item.id.toString() === this.state.favoritKeys[i]) {
+            if (item.fullName === this.state.favoritKeys[i]) {
                 return true;
             }
         }
@@ -209,14 +248,5 @@ var styles = StyleSheet.create({
     },
     listView: {
         // marginTop:-20,
-    },
-    separator: {
-        height: 1,
-        backgroundColor: '#eeeeee',
-    },
-    rowSeparator: {
-        // backgroundColor:'red',
-        // height: 5,
-        // marginLeft: 4,
     },
 });
